@@ -21,5 +21,7 @@ export class PacienteConsultaComponent implements OnInit {
     });
 
   }
+
+
 }
 
