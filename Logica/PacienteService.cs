@@ -20,6 +20,12 @@ namespace Logica
         {
             try
             {
+              var pacienteBus =BuscarxIdentificacion(paciente.Identificacion);
+                if ( pacienteBus != null) 
+                {
+                    return new GuardarPacienteResponse("Error la persona ya se encuentra registrada");
+                }
+
                 paciente.CalcularCopago();
                 _conexion.Open();
                 _repositorio.Guardar(paciente);
@@ -57,6 +63,13 @@ namespace Logica
             List<Paciente> pacientes = _repositorio.ConsultarTodos();
             _conexion.Close();
             return pacientes;
+        }
+                public Paciente BuscarxIdentificacion(string identificacion)
+        {
+            _conexion.Open();
+            Paciente paciente = _repositorio.BuscarPorIdentificacion(identificacion);
+            _conexion.Close();
+            return paciente;
         }
 
 
