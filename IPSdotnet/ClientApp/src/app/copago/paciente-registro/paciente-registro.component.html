@@ -1,31 +1,54 @@
 <div class="container">
-        <div class="row">
-            <div class="col-md-6 offset-md-3">
-                <h2>Registro de Pacientes</h2>
-                <form >
-                                    
-                    <div class="form-group">
-                        <label>Identificacion</label>
-                        <input type="text"  name="identificacion"  [(ngModel)]="paciente.identificacion" class="form-control" />
-                    </div>
-                    <div class="form-group">
-                        <label>Nombre</label>
-                        <input type="text"  name="nombre"  [(ngModel)]="paciente.nombre" class="form-control" />
-                    </div>
-                    <div class="form-group">
-                        <label>Valor del Servicio</label>
-                        <input type="number"  name="edad"  [(ngModel)]="paciente.valorServ" class="form-control" />
-                    </div>
-                    <div class="form-group">
-                        <label>Salario</label>
-                        <input type="number"  name="pulsacion"  [(ngModel)]="paciente.salario" class="form-control" />
-                    </div>
-                    <div class="text-center">
-                        <button class="btn btn-primary mr-1"(click)="add()">Register</button>
-                        <button class="btn btn-secondary" type="reset">Cancel</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    
+
+    <div class="row">
+
+        <div class="col-md-6 offset-md-3">
+
+            <h2>Registro de Pacientes</h2>
+
+            <form [formGroup]="formGroup">
+
+                <div class="form-group">
+
+                    <label>Identificacion</label>
+                    <input type="text"   name="identificacion" formControlName="identificacion"  class="form-control" [ngClass]="{ 'is-invalid':  control.identificacion.errors}"  />
+                    <div *ngIf="control.identificacion.errors"  class="invalid-feedback">
+                        <div *ngIf="control.identificacion.errors.required">Se require la Identificacion</div>
+                            </div>
+
+                            </div>
+
+                            <div class="form-group">
+                                <label>Nombre</label>
+                                <input type="text"   name="nombre"  formControlName="nombre"  class="form-control" [ngClass]="{ 'is-invalid':  control.nombre.errors}"  />
+                                <div *ngIf="control.nombre.errors"  class="invalid-feedback">
+                                    <div *ngIf="control.nombre.errors.required">Se require el nombre</div>
+                                        </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Valor del Servicio</label>
+                                            <input type="number"   name="edad"   formControlName="valorServ"  class="form-control" [ngClass]="{ 'is-invalid':  control.valorServ.errors}"  />
+                                            <div *ngIf="control.valorServ.errors"  class="invalid-feedback">
+                                                <div *ngIf="control.valorServ.errors.required">Se require el Valor</div>
+                                                    </div>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <label>Salario</label>
+                                                        <input type="number"   name="salario"   formControlName="salario"  class="form-control" [ngClass]="{ 'is-invalid':  control.valorServ.errors}"  />
+                                                        <div *ngIf="control.salario.errors"  class="invalid-feedback">
+                                                            <div *ngIf="control.salario.errors.required">Se require el Valor</div>
+                                                                </div>
+                                                                </div>
+
+                                                                <div class="text-center">
+
+                                                                    <button class="btn btn-primary mr-1" (click)="onSubmit()"   [disabled]="formGroup.invalid">>Register</button>
+
+                                                                        <button class="btn btn-secondary"  type="reset">Cancel</button>
+                                                                            </div>
+            </form>
+            </div>
+            </div>
+            </div>

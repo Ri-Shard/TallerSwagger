@@ -1,10 +1,15 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Entity;
 using Logica;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using IPSdotnet.Models;
+using System.ComponentModel.DataAnnotations;
+using System;
+
 
 namespace IPSdotnet.Controllers
 {
@@ -47,7 +52,13 @@ namespace IPSdotnet.Controllers
             var response = _pacienteService.Guardar(paciente);
             if (response.Error) 
             {
-                return BadRequest(response.Mensaje);
+             ModelState.AddModelError("Guardar Paciente", response.Mensaje);
+                var problemDetails = new ValidationProblemDetails(ModelState)
+                {
+                    Status = StatusCodes.Status400BadRequest,
+                };
+
+                return BadRequest(problemDetails);
             }
             return Ok(response.Paciente);
         }
