@@ -2,41 +2,40 @@ using Datos;
 using Entity;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+
 
 namespace Logica
 {
     public class PacienteService
     {
 
-        private readonly ConnectionManager _conexion;
-        private readonly PacienteRepository _repositorio;
-        public PacienteService(string connectionString)
-        {
-            _conexion = new ConnectionManager(connectionString);
-            _repositorio = new PacienteRepository(_conexion);
-        }
+        private readonly CopagoContext _context;
+      
+        public PacienteService(CopagoContext context)
+        {
+            _context=context;
+        }
 
         public GuardarPacienteResponse Guardar(Paciente paciente)
         {
             try
             {
-              var pacienteBus =BuscarxIdentificacion(paciente.Identificacion);
+              var pacienteBus =_context.Pacientes.Find(paciente.Identificacion);
                 if ( pacienteBus != null) 
                 {
-                    return new GuardarPacienteResponse("Error la persona ya se encuentra registrada");
+                    return new GuardarPacienteResponse("Error el paciente ya se encuentra registrada");
                 }
 
                 paciente.CalcularCopago();
-                _conexion.Open();
-                _repositorio.Guardar(paciente);
-                _conexion.Close();
+             _context.Pacientes.Add(paciente);
+             _context.SaveChanges();
                 return new GuardarPacienteResponse(paciente);
             }
             catch (Exception e)
             {
                 return new GuardarPacienteResponse($"Error de la Aplicacion: {e.Message}");
             }
-            finally { _conexion.Close(); }
         }
 
         public class GuardarPacienteResponse 
@@ -59,17 +58,63 @@ namespace Logica
 
          public List<Paciente> ConsultarTodos()
         {
-            _conexion.Open();
-            List<Paciente> pacientes = _repositorio.ConsultarTodos();
-            _conexion.Close();
+            List<Paciente> pacientes = _context.Pacientes.ToList();
             return pacientes;
         }
                 public Paciente BuscarxIdentificacion(string identificacion)
         {
-            _conexion.Open();
-            Paciente paciente = _repositorio.BuscarPorIdentificacion(identificacion);
-            _conexion.Close();
+            Paciente paciente = _context.Pacientes.Find(identificacion);
             return paciente;
+        }
+
+        public string Eliminar(string identificacion)
+        {
+            try
+            {
+              var paciente =_context.Pacientes.Find(identificacion);
+                if ( paciente != null) 
+                {
+                    _context.Pacientes.Remove( paciente );
+                    _context.SaveChanges();
+                    return ($"El registro {paciente.Nombre} se ha eliminado satisfactoriamente");
+                }
+                else
+                {
+                    return ($"Lo sentimos {identificacion} no se encuentra registrada");
+   
+                }           
+            }catch (Exception e)
+            {
+                    return ($"Error de la aplicacion: {e.Message}");
+
+            }   
+        }
+
+        public string Modificar (Paciente PacienteN)
+        {
+            try
+            {
+                var PacienteV    =_context.Pacientes.Find(PacienteN.Identificacion);
+                if(PacienteV != null)
+                {
+                    PacienteV.Nombre = PacienteN.Nombre;
+                    PacienteV.Identificacion = PacienteN.Identificacion;
+                    PacienteV.ValorServ = PacienteN.ValorServ;
+                    PacienteV.Salario = PacienteN.Salario;
+                    PacienteV.CalcularCopago();
+                    _context.Pacientes.Update(PacienteV);
+                    _context.SaveChanges();
+                    return ($"El registro {PacienteN.Nombre} se ha modificado satisfactoriamente. ");
+                }else
+                {
+                    return ($"Lo sentimos {PacienteN.Identificacion} No se encuentra registrada. ");
+
+                }
+            }catch (Exception e)
+            {
+                    return ($"Error de la aplicacion: {e.Message}");
+
+            } 
         }
 
 

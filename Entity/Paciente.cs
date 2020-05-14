@@ -1,12 +1,10 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Entity
 {
     public class Paciente
     {
-        [key]
+        [Key]
         public string Identificacion { get; set; }
         public string Nombre { get; set; }
         public int ValorServ { get; set; }

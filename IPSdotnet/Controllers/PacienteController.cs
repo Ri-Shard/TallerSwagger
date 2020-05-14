@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using IPSdotnet.Models;
 using System.ComponentModel.DataAnnotations;
 using System;
+using Datos;
 
 
 namespace IPSdotnet.Controllers
@@ -20,13 +21,12 @@ namespace IPSdotnet.Controllers
     public class PacienteController : ControllerBase
     {
          private readonly PacienteService _pacienteService;
-        public IConfiguration Configuration { get; }
-        public PacienteController(IConfiguration configuration)
-        {
-            Configuration = configuration;
-            string connectionString = Configuration["ConnectionStrings:DefaultConnection"];
-            _pacienteService = new PacienteService(connectionString);
-        }
+        public PacienteController(CopagoContext context)
+        {
+        
+        _pacienteService= new PacienteService(context);
+        }
+
 
         // GET: api/Persona
         [HttpGet]
